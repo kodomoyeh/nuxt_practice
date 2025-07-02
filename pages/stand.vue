@@ -94,19 +94,19 @@ onUnmounted(() => {
   <span v-if="wsStatus === 'connected'">🟢</span>
     <span v-else>🟥</span>
 
-  <div class=" mx-auto">  
+  <div class=" max-w-3xl mx-auto p-10">  
    <div class="w-2XL grid grid-cols-4 gap-10">
     <!-- 請確認你的 'todos' table 裡有 'id' 和 'name' 這兩個欄位 -->
-    <div v-for="todo in todos" :key="todo.id">
+    
 
-        <SushiItem 
+        <SushiItem  v-for="todo in todos" :key="todo.id"
       :id="todo.id"
       :created_at="todo.created_at" 
       :item=" todo.item "
       table_area_id="01"
       :item_type="1"
     />
-    </div>
+    
   </div>
   </div>
 </template>
