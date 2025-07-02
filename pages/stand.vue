@@ -6,7 +6,7 @@ const todos = ref([])
 
 // 初始載入資料
 async function getOrders() {
-  const { data, error } = await supabase.from('order_list').select()
+  const { data, error } = await supabase.from('order_list').select().order('created_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching todos:', error)
@@ -94,18 +94,19 @@ onUnmounted(() => {
   <span v-if="wsStatus === 'connected'">🟢</span>
     <span v-else>🟥</span>
 
-  <ul>
+  <div class=" mx-auto">  
+   <div class="w-2XL grid grid-cols-4 gap-10">
     <!-- 請確認你的 'todos' table 裡有 'id' 和 'name' 這兩個欄位 -->
-    <li v-for="todo in todos" :key="todo.id">
+    <div v-for="todo in todos" :key="todo.id">
 
         <SushiItem 
       :id="todo.id"
-      :created_at="new Date(Date.now() )" 
+      :created_at="todo.created_at" 
       :item=" todo.item "
       table_area_id="01"
       :item_type="1"
     />
-    </li>
-
-  </ul>
+    </div>
+  </div>
+  </div>
 </template>
