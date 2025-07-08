@@ -2,9 +2,8 @@
   <div class="p-6 max-w-md mx-auto">
     <h1 class="text-xl font-bold mb-4">送出訂單</h1>
 
-    <div class="mb-4">
-      <label class="block mb-1 font-medium">Item Key (ID)</label>
-      <p class="text-sm text-gray-500 mb-2">可用 Item ID: 0 (握壽司), 1 (炸蝦)</p>
+    <div class="mb-4">      <label class="block mb-1 font-medium">Item Key (ID)</label>
+      <p class="text-sm text-gray-500 mb-2">{{ availableItemsText }}</p>
       <input
         v-model="itemKey"
         type="text"
@@ -27,16 +26,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useSupabaseClient } from '#imports'
 
 const itemKey = ref('')
 const message = ref('')
 const success = ref(false)
 
+const availableItemsText = computed(() => {
+  const itemsWithIds = items.map((item, index) => `${index} (${item})`).join(', ')
+  return `可用 Item ID: ${itemsWithIds}`
+})
+
 const supabase = useSupabaseClient()
 
-const items = ['握壽司', '炸蝦']
+const items = ['握壽司', '炸蝦', '丼飯']
 
 const sendOrder = async () => {
   if (!itemKey.value) {
@@ -47,13 +51,13 @@ const sendOrder = async () => {
 
   const itemIndex = parseInt(itemKey.value, 10)
 
-  if (isNaN(itemIndex) || itemIndex < 1 || itemIndex > items.length) {
-    message.value = `無效的 item id。請輸入 1 到 ${items.length } 之間的數字。`
+  if (isNaN(itemIndex) || itemIndex < 0 || itemIndex >= items.length) {
+    message.value = `無效的 item id。請輸入 0 到 ${items.length - 1} 之間的數字。`
     success.value = false
     return
   }
 
-  const selectedItem = items[itemIndex-1]
+  const selectedItem = items[itemIndex]
 
   const { data, error } = await supabase
     .from('order_list')
